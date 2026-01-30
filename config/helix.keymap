@@ -100,7 +100,10 @@
 
         base {
             layers = <DEF LHB>;
-            input-processors = <&zip_report_rate_limit 15>;
+            input-processors = <&zip_report_rate_limit 15>
+            , <&xy_transf (INPUT_TRANSFORM_Y_INVERT)>
+            ;
+            
         };
     };
 
