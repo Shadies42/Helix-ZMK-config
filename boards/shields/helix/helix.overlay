@@ -37,7 +37,7 @@
      * GPIO-direct still uses matrix coordinates in the keymap.
      * 1 row × N cols, in the same order as input-gpios below.
      */
-    default_transform: keymap_transform_0 {
+    default_transform: default {
         compatible = "zmk,matrix-transform";
         rows = <1>;
         columns = <9>;
