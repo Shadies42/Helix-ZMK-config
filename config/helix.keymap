@@ -122,7 +122,7 @@
         };
 
         /* Encoder1 = vertical scroll (wheel) */
-        rot_enc_v: sensor_rotate {
+        rot_enc_v: sensor_rotate_v {
             compatible = "zmk,behavior-sensor-rotate";
             #sensor-binding-cells = <0>;
             bindings = <&ec_s MOVE_Y(-37)>, <&ec_s MOVE_Y(37)>;
@@ -130,7 +130,7 @@
         };
 
         /* Encoder2 = horizontal scroll (h-wheel) */
-        rot_enc_h: sensor_rotate {
+        rot_enc_h: sensor_rotate_h {
             compatible = "zmk,behavior-sensor-rotate";
             #sensor-binding-cells = <0>;
             bindings = <&ec_s MOVE_X(-37)>, <&ec_s MOVE_X(37)>;
