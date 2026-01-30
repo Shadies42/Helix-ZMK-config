@@ -1,0 +1,6 @@
+if SHIELD_HELIX
+
+config ZMK_KEYBOARD_NAME
+	default "helix"
+
+endif
