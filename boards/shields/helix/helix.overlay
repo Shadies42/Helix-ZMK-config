@@ -111,7 +111,7 @@
          * Tune per your encoder detents and how many scroll/key events you want
          * per full wheel revolution.
          */
-        triggers-per-rotation = <12 12>;
+        triggers-per-rotation = <12>;
     };
 };
 
