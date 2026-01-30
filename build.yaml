@@ -20,5 +20,5 @@
 ---
   
 include:
-  - board: nice_nano_v2
+  - board: nrfmicro/nrf52840
     shield: helix
