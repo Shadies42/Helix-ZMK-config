@@ -17,4 +17,9 @@
 #     cmake-args: -DCONFIG_ZMK_STUDIO=y
 #     artifact-name: corne_left_with_studio
 #
----
+- board: <your_board>
+  shield: <your_shield>
+  extra_modules:
+    - zmk-paw3395-driver
+    - zmk-input-processor-report-rate-limit
+    - zmk-behavior-mouse-key-toggle
