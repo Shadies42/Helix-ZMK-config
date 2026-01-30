@@ -1,0 +1,176 @@
+/*
+ * Mouse overlay: direct GPIO buttons (incl. Button5) + 2 encoders + PAW3395 SPI wiring
+ *
+ * Pins you provided:
+ * Buttons:
+ *   Middle   P0.06
+ *   Right    P0.08
+ *   DPI      P0.11
+ *   Left     P1.04
+ *   Button5  P1.06
+ *   Button1  P1.13
+ *   Button2  P1.11
+ *   Button3  P0.10
+ *   Button4  P0.09
+ *
+ * Encoders:
+ *   Encoder1A P0.31, Encoder1B P0.29
+ *   Encoder2A P0.02, Encoder2B P1.15
+ *
+ * PAW3395:
+ *   MOTION/IRQ P0.17
+ *   SCLK       P0.20
+ *   MOSI       P0.22
+ *   MISO       P0.24
+ *   nCS        P1.00
+ */
+
+#include <dt-bindings/zmk/matrix_transform.h>
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+
+/ {
+    chosen {
+        zmk,kscan = &kscan0;
+    };
+
+    /*
+     * GPIO-direct still uses matrix coordinates in the keymap.
+     * 1 row × N cols, in the same order as input-gpios below.
+     */
+    default_transform: keymap_transform_0 {
+        compatible = "zmk,matrix-transform";
+        rows = <1>;
+        columns = <9>;
+
+        map = <
+            RC(0,0) RC(0,1) RC(0,2) RC(0,3)
+            RC(0,4) RC(0,5) RC(0,6) RC(0,7)
+            RC(0,8)
+        >;
+    };
+
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-direct";
+        wakeup-source;
+
+        /*
+         * Order matters: RC(0,0) is the first entry, RC(0,1) second, etc.
+         *
+         * Mapping used here:
+         *  0 Left        P1.04
+         *  1 Right       P0.08
+         *  2 Middle      P0.06
+         *  3 DPI Shift   P0.11
+         *  4 Button1     P1.13
+         *  5 Button2     P1.11
+         *  6 Button3     P0.10
+         *  7 Button4     P0.09
+         *  8 Button5     P1.06
+         */
+        input-gpios =
+              <&gpio1  4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  /* Left */
+            , <&gpio0  8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  /* Right */
+            , <&gpio0  6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  /* Middle */
+            , <&gpio0 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  /* DPI shift */
+            , <&gpio1 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  /* Button1 */
+            , <&gpio1 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  /* Button2 */
+            , <&gpio0 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  /* Button3 */
+            , <&gpio0  9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  /* Button4 */
+            , <&gpio1  6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  /* Button5 */
+            ;
+    };
+
+    /*
+     * Two scroll encoders as sensors
+     * - Encoder1A P0.31, Encoder1B P0.29
+     * - Encoder2A P0.02, Encoder2B P1.15
+     */
+    encoder1: encoder1 {
+        compatible = "alps,ec11";
+        status = "okay";
+        a-gpios = <&gpio0 31 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        b-gpios = <&gpio0 29 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        steps = <48>;
+    };
+
+    encoder2: encoder2 {
+        compatible = "alps,ec11";
+        status = "okay";
+        a-gpios = <&gpio0  2 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        b-gpios = <&gpio1 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        steps = <48>;
+    };
+
+    sensors: sensors {
+        compatible = "zmk,keymap-sensors";
+        status = "okay";
+
+        sensors = <&encoder1 &encoder2>;
+
+        /*
+         * Tune per your encoder detents and how many scroll/key events you want
+         * per full wheel revolution.
+         */
+        triggers-per-rotation = <12 12>;
+    };
+};
+
+/*
+ * PAW3395 SPI pinctrl + device node (example-style, but with your pins)
+ *
+ * NOTE:
+ * - This assumes your target board exposes &spi0. If your board uses &spi1 or &spi2,
+ *   rename the node references accordingly (&spi1 / &spi2) and also rename the
+ *   pinctrl labels (spi0_default -> spi1_default, etc.).
+ */
+
+&pinctrl {
+    spi0_default: spi0_default {
+        group1 {
+            psels = <NRF_PSEL(SPIM_SCK,  0, 20)>,
+                    <NRF_PSEL(SPIM_MOSI, 0, 22)>,
+                    <NRF_PSEL(SPIM_MISO, 0, 24)>;
+        };
+    };
+
+    spi0_sleep: spi0_sleep {
+        group1 {
+            psels = <NRF_PSEL(SPIM_SCK,  0, 20)>,
+                    <NRF_PSEL(SPIM_MOSI, 0, 22)>,
+                    <NRF_PSEL(SPIM_MISO, 0, 24)>;
+            low-power-enable;
+        };
+    };
+};
+
+&spi0 {
+    compatible = "nordic,nrf-spim";
+    status = "okay";
+
+    pinctrl-0 = <&spi0_default>;
+    pinctrl-1 = <&spi0_sleep>;
+    pinctrl-names = "default", "sleep";
+
+    /* nCS = P1.00 */
+    cs-gpios = <&gpio1 0 GPIO_ACTIVE_LOW>;
+
+    pd0: pd@0 {
+        compatible = "pixart,paw3395";
+        status = "okay";
+        label = "MOU0";
+        reg = <0>;
+
+        spi-max-frequency = <4000000>;
+
+        /* MOTION/IRQ = P0.17 */
+        irq-gpios = <&gpio0 17 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+
+        /* PAW3395 driver parameters (copying example style) */
+        cpi = <600>;
+        /* invert-y; */   /* uncomment if needed */
+        evt-type = <INPUT_EV_REL>;
+        x-input-code = <INPUT_REL_X>;
+        y-input-code = <INPUT_REL_Y>;
+        /* force-awake; */ /* uncomment if desired */
+    };
+};
