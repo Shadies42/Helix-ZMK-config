@@ -19,7 +19,6 @@
 #
 - 
   
-  
 include:
   - board: nice_nano
     shield: helix
