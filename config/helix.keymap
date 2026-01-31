@@ -139,6 +139,29 @@
             bindings = <&ec_s MOVE_X(-37)>, <&ec_s MOVE_X(37)>;
             tap-ms = <65>;
         };
+        dpi_cycle: sensor_dpi_cycle {
+            compatible = "zmk,behavior-sensor-attr-cycle";
+            #binding-cells = <1>;
+
+            /* Pick whatever CPI steps you want */
+            values = < 400 800 1200 1600 2400 3200 >;
+
+            /*
+            * This selects which “attribute” is being changed.
+            * In George’s example, attr=<0> is DPI/CPI.
+            * Keep it as 0 unless your binding docs say otherwise.
+            */
+            attr = <0>;
+
+            /* Use your PAW3395 device node label */
+            sensor_device = <&pd0>;
+
+            display-name = "DPI cycle";
+
+            /* Keep the value across reboots (spelling may vary by module version) */
+            persistant;
+        };
+
     };
 
     /*
@@ -185,7 +208,7 @@
                 &mkp LCLK
                 &mkp RCLK
                 &mkp MCLK
-                &trans           /* DPI shift placeholder for now */
+                &dpi_cycle(1)           /* DPI shift placeholder for now */
 
                 &kp N1
                 &kp N2

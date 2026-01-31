@@ -19,7 +19,9 @@ manifest:
     - name: zmk-pmw3610-driver
       remote: badjeff
       revision: main
-
+    - name: zmk-behavior-sensor-attr-cycle
+      remote: george-norton
+      revision: main
     # Input processors / behaviors used in your keymap
     - name: zmk-input-processor-report-rate-limit
       remote: badjeff
