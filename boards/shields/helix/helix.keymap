@@ -23,17 +23,7 @@
         x-codes = <INPUT_REL_X>;
         y-codes = <INPUT_REL_Y>;
     };
-
-    mou0_listener {
-        compatible = "zmk,input-listener";
-        device = <&pd0>;
-        base {
-            layers = <DEF>;
-            input-processors = <&xy_transf (INPUT_TRANSFORM_Y_INVERT)>
-                             , <&zip_report_rate_limit 15>;
-        };
-    };
-
+    
     behaviors {
         /* Vertical scroll behavior */
         ec_s_v: mouse_scroll_v {

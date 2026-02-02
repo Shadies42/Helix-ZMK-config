@@ -1,17 +1,10 @@
 file_format: "1"
 id: helix
-name: "Helix Mouse"
+name: "Helix"
 type: shield
-requires: [pro_micro]
-features:
-  - keys
-  - pointer
 
 ---
 file_format: "1"
 id: helix_dongle
 name: "Helix Dongle"
 type: shield
-requires: [pro_micro]
-features:
-  - dongle

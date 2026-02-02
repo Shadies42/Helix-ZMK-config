@@ -6,21 +6,12 @@
 / {
     keymap {
         compatible = "zmk,keymap";
-
         default_layer {
             display-name = "Dongle";
-
-            /* 1x9 positions – keep same shape as your transform */
             bindings = <
-                &mkp LCLK      /* 0 */
-                &mkp MCLK      /* 1 */
-                &mkp RCLK      /* 2 */
-                &kp N1         /* 3 */
-                &kp N2         /* 4 */
-                &kp N3         /* 5 */
-                &kp N4         /* 6 */
-                &kp N5         /* 7 */
-                &kp N6         /* 8 */
+                &mkp LCLK &mkp MCLK &mkp RCLK
+                &kp N1    &kp N2    &kp N3
+                &kp N4    &kp N5    &kp N6
             >;
         };
     };

@@ -1,6 +1,7 @@
 #include <zephyr/dt-bindings/input/input-event-codes.h>
 #include "helix.dtsi"
-
+#include <dt-bindings/zmk/input_transform.h>
+#include <input/processors/report_rate_limit.dtsi>
 / {
     chosen {
         zmk,kscan = &kscan0;
@@ -44,6 +45,10 @@
             low-power-enable;
         };
     };
+};
+
+&zip_report_rate_limit {
+    limit-ble-only;
 };
 
 &spi2 {
@@ -102,5 +107,26 @@
         sensors = <&enc1 &enc2>;
         /* One value applies to the whole sensors node */
         triggers-per-rotation = <12>;
+    };
+};
+
+/ {
+    xy_transf: xy_transf {
+        compatible = "zmk,input-processor-transform";
+        #input-processor-cells = <1>;
+        type = <INPUT_EV_REL>;
+        x-codes = <INPUT_REL_X>;
+        y-codes = <INPUT_REL_Y>;
+    };
+
+    mou0_listener {
+        compatible = "zmk,input-listener";
+        device = <&pd0>;
+
+        base {
+            layers = <0>; /* DEF layer index */
+            input-processors = <&xy_transf (INPUT_TRANSFORM_Y_INVERT)>
+                             , <&zip_report_rate_limit 15>;
+        };
     };
 };
