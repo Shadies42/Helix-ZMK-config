@@ -214,7 +214,7 @@
                 &kp N2
                 &kp N3
                 &kp N4
-                &kp N5
+                &bt BT_NXT
             >;
 
             /* encoder1 = vertical scroll, encoder2 = horizontal scroll */

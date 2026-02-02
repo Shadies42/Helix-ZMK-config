@@ -167,7 +167,7 @@
         irq-gpios = <&gpio0 17 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
 
         /* PAW3395 driver parameters (copying example style) */
-        cpi = <600>;
+        cpi = <800>;
         /* invert-y; */   /* uncomment if needed */
         evt-type = <INPUT_EV_REL>;
         x-input-code = <INPUT_REL_X>;
