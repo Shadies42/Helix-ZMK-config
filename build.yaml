@@ -18,9 +18,22 @@
 #     artifact-name: corne_left_with_studio
 #
 ---
-  
 include:
+  # Build the dongle central
+  - board: nrfmicro/nrf52840
+    shield: helix_dongle
+
+  - board: nrfmicro/nrf52840
+    shield: settings_reset
+
+  # Build the mouse peripheral (force peripheral role)
   - board: nrfmicro/nrf52840
     shield: helix
-  - board: nrfmicro/nrf52840
-    shield: dongle
+    cmake-args: >
+      -DCONFIG_ZMK_SPLIT=y
+      -DCONFIG_ZMK_SPLIT_ROLE_CENTRAL=n
+      -DCONFIG_ZMK_SPLIT_ESB=y
+      -DCONFIG_ZMK_SPLIT_BLE=n
+      -DCONFIG_ZMK_SPLIT_WIRED=n
+      -DCONFIG_ZMK_BLE=n
+      -DCONFIG_ZMK_SPLIT_ESB_PERIPHERAL_ID=1
