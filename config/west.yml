@@ -6,6 +6,8 @@ manifest:
       url-base: https://github.com/badjeff
     - name: george-norton
       url-base: https://github.com/george-norton
+    - name: nrfconnect
+      url-base: https://github.com/nrfconnect
   projects:
     # Base ZMK (badjeff fork, includes extra features you’ve been using)
     - name: zmk
@@ -30,6 +32,22 @@ manifest:
     - name: zmk-behavior-mouse-key-toggle
       remote: badjeff
       revision: main
+    # --- ESB Split Transport + NCS bits ---
+    - name: zmk-feature-split-esb
+      remote: badjeff
+      revision: main
+      
+    - name: sdk-nrf
+      remote: badjeff
+      revision: v3.1-branch+zmk-fixes
+      path: nrf
+
+    - name: nrfxlib
+      remote: nrfconnect
+      revision: v3.1-branch
+      repo-path: sdk-nrfxlib
+      path: nrfxlib
+
 
   self:
     path: config

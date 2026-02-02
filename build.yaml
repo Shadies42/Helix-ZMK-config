@@ -22,3 +22,5 @@
 include:
   - board: nrfmicro/nrf52840
     shield: helix
+  - board: nrfmicro/nrf52840
+    shield: dongle
