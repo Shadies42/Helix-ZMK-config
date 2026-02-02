@@ -1,4 +1,5 @@
-config SHIELD_HELIX_DONGLE
-    def_bool $(shields_list_contains,helix_dongle)
 config SHIELD_HELIX
     def_bool $(shields_list_contains,helix)
+
+config SHIELD_HELIX_DONGLE
+    def_bool $(shields_list_contains,helix_dongle)

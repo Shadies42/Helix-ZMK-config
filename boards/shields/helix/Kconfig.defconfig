@@ -1,19 +1,25 @@
-if SHIELD_HELIX_DONGLE
+if SHIELD_HELIX
 
 config ZMK_KEYBOARD_NAME
-    default "Helix"
+    default "helix"
 
 config ZMK_SPLIT
     default y
 
 config ZMK_SPLIT_ROLE_CENTRAL
-    default y
+    default n
 
 endif
 
-if SHIELD_HELIX
+if SHIELD_HELIX_DONGLE
+
+config ZMK_KEYBOARD_NAME
+    default "helix_dongle"
 
 config ZMK_SPLIT
+    default y
+
+config ZMK_SPLIT_ROLE_CENTRAL
     default y
 
 endif

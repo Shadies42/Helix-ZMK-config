@@ -1,179 +1,56 @@
-/*
- * Mouse overlay: direct GPIO buttons (incl. Button5) + 2 encoders + PAW3395 SPI wiring
- *
- * Pins you provided:
- * Buttons:
- *   Middle   P0.06
- *   Right    P0.08
- *   DPI      P0.11
- *   Left     P1.04
- *   Button5  P1.06
- *   Button1  P1.13
- *   Button2  P1.11
- *   Button3  P0.10
- *   Button4  P0.09
- *
- * Encoders:
- *   Encoder1A P0.31, Encoder1B P0.29
- *   Encoder2A P0.02, Encoder2B P1.15
- *
- * PAW3395:
- *   MOTION/IRQ P0.17
- *   SCLK       P0.20
- *   MOSI       P0.22
- *   MISO       P0.24
- *   nCS        P1.00
- */
-
-#include <dt-bindings/zmk/matrix_transform.h>
 #include <zephyr/dt-bindings/input/input-event-codes.h>
-#include <physical_layouts.dtsi>
+#include "helix.dtsi"
 
 / {
     chosen {
         zmk,kscan = &kscan0;
-        zmk,matrix-transform = &default_transform;
-        zmk,physical-layout = <&pl0>;
     };
 
-    default_transform: default {
-        compatible = "zmk,matrix-transform";
-        rows = <1>;
-        columns = <9>;
-        map = <
-            RC(0,0) RC(0,1) RC(0,2) RC(0,3)
-            RC(0,4) RC(0,5) RC(0,6) RC(0,7)
-            RC(0,8)
-        >;
-    };
-
-    /*
-     * Minimal physical layout so physical_layouts.c can generate layouts[]
-     * The keys list length should match rows*columns (9 here).
-     */
-    pl0: physical_layout0 {
-        compatible = "zmk,physical-layout";
-        display-name = "mouse-layout";
-        transform = <&default_transform>;
-
-        keys =
-            <&key_physical_attrs 100 100   0   0  0 0 0>,
-            <&key_physical_attrs 100 100 100   0  0 0 0>,
-            <&key_physical_attrs 100 100 200   0  0 0 0>,
-            <&key_physical_attrs 100 100 300   0  0 0 0>,
-            <&key_physical_attrs 100 100 400   0  0 0 0>,
-            <&key_physical_attrs 100 100 500   0  0 0 0>,
-            <&key_physical_attrs 100 100 600   0  0 0 0>,
-            <&key_physical_attrs 100 100 700   0  0 0 0>,
-            <&key_physical_attrs 100 100 800   0  0 0 0>;
-    };
-
+    /* 9 direct inputs => 1 row x 9 cols via matrix-transform */
     kscan0: kscan {
         compatible = "zmk,kscan-gpio-direct";
         wakeup-source;
 
-        /*
-         * Order matters: RC(0,0) is the first entry, RC(0,1) second, etc.
-         *
-         * Mapping used here:
-         *  0 Left        P1.04
-         *  1 Right       P0.08
-         *  2 Middle      P0.06
-         *  3 DPI Shift   P0.11
-         *  4 Button1     P1.13
-         *  5 Button2     P1.11
-         *  6 Button3     P0.10
-         *  7 Button4     P0.09
-         *  8 Button5     P1.06
-         */
+        /* Order MUST match your keymap positions 0..8 */
         input-gpios =
-              <&gpio1  4 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  /* Left */
-            , <&gpio0  8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  /* Right */
-            , <&gpio0  6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  /* Middle */
-            , <&gpio0 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  /* DPI shift */
-            , <&gpio1 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  /* Button1 */
-            , <&gpio1 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  /* Button2 */
-            , <&gpio0 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  /* Button3 */
-            , <&gpio0  9 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  /* Button4 */
-            , <&gpio1  6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  /* Button5 */
-            ;
-    };
-
-    /*
-     * Two scroll encoders as sensors
-     * - Encoder1A P0.31, Encoder1B P0.29
-     * - Encoder2A P0.02, Encoder2B P1.15
-     */
-    encoder1: encoder1 {
-        compatible = "alps,ec11";
-        status = "okay";
-        a-gpios = <&gpio0 31 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-        b-gpios = <&gpio0 29 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-        steps = <48>;
-    };
-
-    encoder2: encoder2 {
-        compatible = "alps,ec11";
-        status = "okay";
-        a-gpios = <&gpio0  2 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-        b-gpios = <&gpio1 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-        steps = <48>;
-    };
-
-    sensors: sensors {
-        compatible = "zmk,keymap-sensors";
-        status = "okay";
-
-        sensors = <&encoder1 &encoder2>;
-
-        /*
-         * Tune per your encoder detents and how many scroll/key events you want
-         * per full wheel revolution.
-         */
-        triggers-per-rotation = <12>;
-    };
-    esb_split {
-        compatible = "zmk,esb-split";
-        base-addr-0 = <0xE7 0xE7 0xE7 0xE7>;
-        base-addr-1 = <0xC2 0xC2 0xC2 0xC2>;
-        addr-prefix = <0xE7 0xC2 0xC3 0xC4 0xC5 0xC6 0xC7 0xC8>;
+            <&gpio1 4  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  /* 0: Left   P1.04 */
+          , <&gpio0 6  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  /* 1: Middle P0.06 */
+          , <&gpio0 8  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  /* 2: Right  P0.08 */
+          , <&gpio0 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  /* 3: DPI    P0.11 */
+          , <&gpio1 6  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  /* 4: Btn5   P1.06 */
+          , <&gpio0 9  (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  /* 5: Btn4   P0.09 */
+          , <&gpio0 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  /* 6: Btn3   P0.10 */
+          , <&gpio1 11 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>  /* 7: Btn2   P1.11 */
+          , <&gpio1 13 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>; /* 8: Btn1   P1.13 */
     };
 };
 
-/*
- * PAW3395 SPI pinctrl + device node (example-style, but with your pins)
- *
- * NOTE:
- * - This assumes your target board exposes &spi0. If your board uses &spi1 or &spi2,
- *   rename the node references accordingly (&spi1 / &spi2) and also rename the
- *   pinctrl labels (spi0_default -> spi1_default, etc.).
- */
-
+/* Encoders + PAW3395 wiring */
 &pinctrl {
-    spi0_default: spi0_default {
+    spi2_default: spi2_default {
         group1 {
-            psels = <NRF_PSEL(SPIM_SCK,  0, 20)>,
-                    <NRF_PSEL(SPIM_MOSI, 0, 22)>,
-                    <NRF_PSEL(SPIM_MISO, 0, 24)>;
+            psels =
+                <NRF_PSEL(SPIM_SCK, 0, 20)>,
+                <NRF_PSEL(SPIM_MOSI, 0, 22)>,
+                <NRF_PSEL(SPIM_MISO, 0, 24)>;
         };
     };
-
-    spi0_sleep: spi0_sleep {
+    spi2_sleep: spi2_sleep {
         group1 {
-            psels = <NRF_PSEL(SPIM_SCK,  0, 20)>,
-                    <NRF_PSEL(SPIM_MOSI, 0, 22)>,
-                    <NRF_PSEL(SPIM_MISO, 0, 24)>;
+            psels =
+                <NRF_PSEL(SPIM_SCK, 0, 20)>,
+                <NRF_PSEL(SPIM_MOSI, 0, 22)>,
+                <NRF_PSEL(SPIM_MISO, 0, 24)>;
             low-power-enable;
         };
     };
 };
 
-&spi0 {
+&spi2 {
     compatible = "nordic,nrf-spim";
     status = "okay";
-
-    pinctrl-0 = <&spi0_default>;
-    pinctrl-1 = <&spi0_sleep>;
+    pinctrl-0 = <&spi2_default>;
+    pinctrl-1 = <&spi2_sleep>;
     pinctrl-names = "default", "sleep";
 
     /* nCS = P1.00 */
@@ -184,18 +61,46 @@
         status = "okay";
         label = "MOU0";
         reg = <0>;
-
         spi-max-frequency = <4000000>;
 
-        /* MOTION/IRQ = P0.17 */
+        /* Motion/IRQ = P0.17 */
         irq-gpios = <&gpio0 17 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
 
-        /* PAW3395 driver parameters (copying example style) */
-        cpi = <800>;
-        /* invert-y; */   /* uncomment if needed */
+        /* Default CPI (can still be changed by behavior later) */
+        cpi = <600>;
+
         evt-type = <INPUT_EV_REL>;
         x-input-code = <INPUT_REL_X>;
         y-input-code = <INPUT_REL_Y>;
-        /* force-awake; */ /* uncomment if desired */
+
+        force-awake;
+    };
+};
+
+/ {
+    /* Encoder 1 (vertical wheel) */
+    enc1: enc1 {
+        compatible = "alps,ec11";
+        status = "okay";
+        a-gpios = <&gpio0 31 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        b-gpios = <&gpio0 29 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        steps = <48>;
+    };
+
+    /* Encoder 2 (horizontal wheel / tilt wheel style) */
+    enc2: enc2 {
+        compatible = "alps,ec11";
+        status = "okay";
+        a-gpios = <&gpio0 2  (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        b-gpios = <&gpio1 15 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+        steps = <48>;
+    };
+
+    sensors: sensors {
+        compatible = "zmk,keymap-sensors";
+        status = "okay";
+        sensors = <&enc1 &enc2>;
+        /* One value applies to the whole sensors node */
+        triggers-per-rotation = <12>;
     };
 };
