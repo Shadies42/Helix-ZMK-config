@@ -22,6 +22,18 @@
         compatible = "zmk,physical-layout";
         display-name = "helix-layout";
         transform = <&default_transform>;
+
+        keys  //                     w    h    x    y   rot   rx   ry
+            = <&key_physical_attrs 280 350  100    0    0    0    0>  /* 0: LMB */
+            , <&key_physical_attrs 120 250  380    0    0    0    0>  /* 1: MMB (scroll click) */
+            , <&key_physical_attrs 280 350  500    0    0    0    0>  /* 2: RMB */
+            , <&key_physical_attrs 120 100  380  250    0    0    0>  /* 3: DPI (below scroll) */
+            , <&key_physical_attrs 100 100    0    0    0    0    0>  /* 4: Btn5 (top of module) */
+            , <&key_physical_attrs 100 100    0  100    0    0    0>  /* 5: Btn4 */
+            , <&key_physical_attrs 100 100    0  200    0    0    0>  /* 6: Btn3 */
+            , <&key_physical_attrs 100 100    0  300    0    0    0>  /* 7: Btn2 */
+            , <&key_physical_attrs 100 100    0  400    0    0    0>  /* 8: Btn1 (bottom of module) */
+            ;
     };
 
     esb_split {
