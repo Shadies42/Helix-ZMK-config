@@ -117,7 +117,7 @@
             #binding-cells = <1>;
             sensor_device = <&pd0>;
             attr = <0>; /* PAW3395_ATTR_CPI */
-            values = <400 800 1600 3200>;
+            values = <100 3200>;
         };
     };
 
