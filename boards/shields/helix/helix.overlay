@@ -111,6 +111,16 @@
 };
 
 / {
+    behaviors {
+        dpi_cycle: dpi_cycle {
+            compatible = "zmk,behavior-sensor-attr-cycle";
+            #binding-cells = <1>;
+            sensor_device = <&pd0>;
+            attr = <0>; /* PAW3395_ATTR_CPI */
+            values = <400 800 1600 3200>;
+        };
+    };
+
     xy_transf: xy_transf {
         compatible = "zmk,input-processor-transform";
         #input-processor-cells = <1>;
