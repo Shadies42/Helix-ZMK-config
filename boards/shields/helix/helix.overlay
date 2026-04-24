@@ -119,12 +119,14 @@
         y-codes = <INPUT_REL_Y>;
     };
 
-    mou0_listener {
-        compatible = "zmk,input-listener";
-        device = <&pd0>;
+    split_inputs {
+        #address-cells = <1>;
+        #size-cells = <0>;
 
-        base {
-            layers = <0>; /* DEF layer index */
+        pd0_split: pd0@0 {
+            compatible = "zmk,input-split";
+            reg = <0>;
+            device = <&pd0>;
             input-processors = <&xy_transf (INPUT_TRANSFORM_Y_INVERT)>
                              , <&zip_report_rate_limit 15>;
         };

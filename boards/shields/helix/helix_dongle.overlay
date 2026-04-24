@@ -1,4 +1,5 @@
 #include "helix.dtsi"
+#include <zephyr/dt-bindings/input/input-event-codes.h>
 
 / {
     chosen {
@@ -10,5 +11,20 @@
         columns = <0>;
         rows = <0>;
         events = <0>;
+    };
+
+    split_inputs {
+        #address-cells = <1>;
+        #size-cells = <0>;
+
+        pd0_split: pd0@0 {
+            compatible = "zmk,input-split";
+            reg = <0>;
+        };
+    };
+
+    mou0_listener: mou0_listener {
+        compatible = "zmk,input-listener";
+        device = <&pd0_split>;
     };
 };
