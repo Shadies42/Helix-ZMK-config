@@ -7,6 +7,14 @@
 
 / {
     behaviors {
+        dpi_cycle: dpi_cycle {
+            compatible = "zmk,behavior-sensor-attr-cycle";
+            #binding-cells = <1>;
+            sensor_device = <&pd0>;
+            attr = <0>; /* PAW3395_ATTR_CPI */
+            values = <400 800 1600 3200>;
+        };
+
         ec_s_v: mouse_scroll_v {
             compatible = "zmk,behavior-input-two-axis";
             #binding-cells = <1>;
@@ -49,7 +57,7 @@
                 &mkp LCLK   /* 0: LMB */
                 &mkp MCLK   /* 1: MMB (scroll click) */
                 &mkp RCLK   /* 2: RMB */
-                &kp N1      /* 3: DPI */
+                &dpi_cycle 1 /* 3: DPI cycle 400→800→1600→3200 */
                 &kp N2      /* 4: Btn5 */
                 &kp N3      /* 5: Btn4 */
                 &kp N4      /* 6: Btn3 */
