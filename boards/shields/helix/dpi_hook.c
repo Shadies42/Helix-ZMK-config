@@ -23,7 +23,7 @@ static int helix_dpi_listener(const zmk_event_t *eh) {
         .position = ev->position,
         .timestamp = ev->timestamp,
     };
-    behavior_keymap_binding_pressed(&binding, event);
+    zmk_behavior_invoke_binding(&binding, event, true);
     return ZMK_EV_EVENT_BUBBLE;
 }
 
