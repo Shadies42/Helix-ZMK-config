@@ -19,7 +19,7 @@
             #binding-cells = <1>;
             sensor_device = <&pd0_split>;
             attr = <0>; /* PAW3395_ATTR_CPI forwarded via split */
-            values = <100 3200>;
+            values = <400 800 1600 3200>;
         };
     };
 

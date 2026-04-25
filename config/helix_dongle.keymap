@@ -10,7 +10,7 @@
             display-name = "Dongle";
             bindings = <
                 &mkp LCLK    &mkp MCLK &mkp RCLK
-                &dpi_cycle 1 &kp N2    &kp N3
+                &none        &kp N2    &kp N3
                 &kp N4       &kp N5    &kp N6
             >;
         };
